@@ -1,0 +1,266 @@
+@import "nib"
+*
+    box-sizing border-box
+
+.scheme
+    text-align center
+    position relative
+    width 240px
+    height 225px
+    border 1px dashed lightblue
+    display flex
+    justify-content center
+    align-items center
+    box-sizing border-box
+    margin 65px auto
+    cursor pointer
+    &.optimised::before
+        content attr(data-optimised-quantity) ' светильни(ков)ка'
+        display block
+        width 100%
+        position absolute
+        font-size 13px
+        bottom calc(100% + 6px)
+        text-align center
+    &.scheme-active.optimised::before
+        color lightseagreen
+
+    &.distance::after
+        content 'Расстояние между светильниками ' attr(data-step) ' м'
+        display block
+        position absolute
+        font-size 16px
+        top 105%
+        text-align center
+
+.scheme-header
+    font-size 16px
+    margin 0 10px
+    color lightblue
+    &.top
+        position absolute
+        bottom calc(100% + 10px)
+
+.scheme-parent__perimeter.rectangle
+.scheme-parent__perimeter.area
+    .scheme-parent__point
+        position relative
+
+.scheme-parent_perimeter_scale
+    cursor default
+    width 500px
+    height 500px
+    margin-bottom 80px
+    .scheme-header-created
+        bottom calc(100% + 30px)
+    &.optimised::before
+        bottom calc(100% + 16px)
+
+
+.scheme-parent__perimeter.area
+    border none
+    .scheme-parent__point
+        position relative
+
+.scheme-parent__item
+    border 1px solid lightcoral
+    display flex
+    position relative
+    box-sizing content-box
+    &.size::before
+        content attr(data-width) 'м'
+        display block
+        width 100%
+        position absolute
+        top calc(100% + 4px)
+        left -1px
+        text-align center
+    &.size::after
+        content attr(data-length) 'м'
+        display flex
+        align-items center
+        height 100%
+        position absolute
+        right calc(100% + 4px)
+        text-align center
+
+.scheme-parent__item-inner
+    display flex
+    height 100%
+    width 100%
+    overflow hidden
+
+.scheme-parent__perimeter
+    margin auto
+    position relative
+    border 1px dashed lightgrey
+    box-sizing content-box
+    &.disk
+        border-radius 50%
+
+        &::before
+            content ''
+            position absolute
+            left 0
+            right 0
+            top calc(50% - .5px)
+            border-bottom 1px dashed rgba(211, 211, 211, .4)
+
+        &::after
+            content ''
+            position absolute
+            top 0
+            bottom 0
+            left calc(50% - .5px)
+            border-left 1px dashed rgba(211, 211, 211, .4)
+
+    &.ellipse
+        &::before
+            content ''
+            position absolute
+            left 0
+            right 0
+            top calc(50% - .5px)
+            border-bottom 1px dashed rgba(211, 211, 211, .4)
+
+        &::after
+            content ''
+            position absolute
+            top 0
+            bottom 0
+            left calc(50% - .5px)
+            border-left 1px dashed rgba(211, 211, 211, .4)
+
+.scheme-parent__point
+    display flex
+    align-items center
+    justify-content center
+    width 8px
+    border-radius 50%
+    position absolute
+    height 8px
+
+.rectangle_item-vertical
+    display flex
+    width 8px
+    position absolute
+    flex-direction column
+    justify-content space-between
+    top -4px
+    bottom -4px
+
+.rectangle_item-horizontal
+    display flex
+    left -4px
+    right -4px
+    height 8px
+    position absolute
+    justify-content space-between
+
+.scheme-light
+    display flex
+    border-radius 50%
+    background radial-gradient(#e5f4ff, transparent)
+    border 1px solid rgba(136, 136, 136, .8)
+    justify-content center
+    align-items center
+    &::before
+        content ''
+        display block
+        width 8px
+        height 8px
+        border-radius 50%
+        background yellow
+        position relative
+        z-index 1
+
+.horisontal-scale
+    position absolute
+    bottom calc(100% + 1px)
+    left -1px
+    right -1px
+    z-index 10
+    display flex
+    justify-content space-around
+
+.horisontal-scale [data-text]
+    position relative
+    font-size 12px
+
+.horisontal-scale [data-text]::before
+    content ''
+    position absolute
+    bottom 0
+    height 5px
+    width 1px
+    background #000
+    left 50%
+
+.vertical-scale
+    position absolute
+    top -1px
+    bottom -1px
+    z-index 10
+    left 100%
+    display flex
+    flex-direction column
+    justify-content space-around
+    padding-left 5px
+
+.vertical-scale [data-text]
+    position relative
+    font-size 12px
+
+.vertical-scale [data-text]::before
+    content ''
+    position absolute
+    left -5px
+    width 5px
+    height 1px
+    background #000
+    bottom 50%
+
+.overflow-elem
+    display flex
+    overflow hidden
+    flex-wrap wrap
+    width 100%
+    height 100%
+
+.scheme-grid__toggle-grid
+    color #000
+
+.scheme-grid
+    display flex
+    flex-wrap wrap
+    justify-content space-around
+    width 1200px
+    margin auto
+    position relative
+    height 720px
+    overflow hidden
+    &.close
+        animation close-modal .5s linear forwards
+
+    &.open
+        animation open-modal .5s linear forwards
+
+@keyframes close-modal
+    100%
+        height 0
+
+@keyframes open-modal
+    0%
+        height 0
+    100%
+        height 720px
+
+.border-red
+    border 1px solid red
+
+.scheme-header-created
+    font-size 16px
+    color #add8e6
+    position absolute
+    bottom calc(100% + 22px)
+    margin 0

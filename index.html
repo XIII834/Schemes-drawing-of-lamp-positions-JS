@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<link rel="stylesheet" href="https://necolas.github.io/normalize.css/5.0.0/normalize.css">
+	<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
+</head>
+<body>
+<form action="#" style="margin: 30px auto 0; width: 1000px; display: flex; justify-content: space-around; height: 100px;">
+	<div><input type="text" class="for-input" name="width" data-default="5" value="" placeholder="5">&nbsp;&nbsp;<p></p>Ширина помещения</div>
+	<div><input type="text" class="for-input" name="length" data-default="4" value="" placeholder="4">&nbsp;&nbsp;<p></p>Длина помещения</div>
+	<div><input type="text" class="for-input" name="quantity" data-default="22" value="" placeholder="22">&nbsp;&nbsp;<p></p>Количество светильников</div>
+	<div><input type="text" class="for-input" name="diameterLightSpot" data-default="1.2" value="" placeholder="1.2">&nbsp;&nbsp;<p></p>Диаметр освещения</div>
+</form>
+<section style="display: flex; flex-wrap: wrap; width: 1300px; margin: auto; justify-content: center">
+	<div class="rational-wrapper">
+		<div class="fixtures rational" data-text="">
+			<div class="fixtures-calculation__rational" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+		</div>
+	</div>
+	<div class="fixtures fixtures-mini" data-text="">
+		<div class="fixtures-calculation__min" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+	</div>
+	<div class="fixtures fixtures-mini" data-text="">
+		<div class="fixtures-calculation__min-1" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+	</div>
+	<div class="fixtures fixtures-mini" data-text="">
+		<div class="fixtures-calculation__min-2" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+	</div>
+	<div class="fixtures fixtures-mini" data-text="">
+		<div class="fixtures-calculation__min-3" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+	</div>
+</section>
+<br>
+<style>
+	* {
+		box-sizing: border-box;
+	}
+
+	.rational-wrapper {
+		display: flex;
+		justify-content: center;
+		width: 100vw;
+	}
+
+	.fixtures {
+		/* padding: 50px 30px 30px; */
+		padding: 5vh 5vh;
+		position: relative;
+		width: 40vh;
+		height: 40vh;
+		border: 2px dashed lightblue;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		box-sizing: content-box;
+		margin-top: 40px;
+	}
+
+	.fixtures-mini {
+		cursor: pointer;
+	}
+
+	.fixtures-active {
+		border-color: red;
+	}
+
+	.fixtures.rational {
+		border-color: red;
+		width: 50vh;
+		height: 50vh;
+		padding: 6vh 6vh;
+	}
+
+	.fixtures:nth-child(odd) {
+		margin-right: 30px;
+	}
+
+	[class^="fixtures-calculation__"] {
+		position: relative;
+		box-sizing: content-box;
+		border: 1px solid lightgrey;
+		margin: auto;
+		display: flex;
+		align-items: center;
+		justify-content: space-around;
+		flex-wrap: wrap;
+	}
+
+	[class^="fixtures-calculation__"]::before {
+		content: attr(data-width) 'м';
+		white-space: nowrap;
+		position: absolute;
+		right: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		margin-right: 10px;
+		font-weight: bold;
+	}
+
+	[class^="fixtures-calculation__"]::after {
+		content: attr(data-length) 'м';
+		white-space: nowrap;
+		position: absolute;
+		top: 100%;
+		width: 100%;
+		display: flex;
+		margin-top: 10px;
+		justify-content: center;
+		font-weight: bold;
+	}
+
+	.fixtures-calculation--item {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-wrap: wrap;
+		position: relative;
+	}
+
+	.for-lightning {
+		display: flex;
+		position: relative;
+		border-radius: 50%;
+		background: radial-gradient(#e5f4ff, transparent);
+		border: 1px solid rgba(136, 136, 136, .8);
+	}
+
+	.fixtures.rational::before {
+		content: attr(data-text) ' светильников';
+	}
+
+	.fixtures::before {
+		content: attr(data-text) ' - светильников';
+		display: block;
+		position: absolute;
+		top: -30px;
+		font-weight: bold;
+		font-size: 20px;
+	}
+
+	.col-before::before {
+		content: '';
+		position: absolute;
+		height: 10px;
+		width: 1px;
+		background: #000;
+		top: -10px;
+		right: 50%;
+	}
+
+	.col-before::after {
+		content: attr(data-text);
+		position: absolute;
+		top: -25px;
+		right: calc(50% - 20px);
+		width: 40px;
+		text-align: center;
+		background: none;
+	}
+
+	.row-before::before {
+		content: '';
+		position: absolute;
+		height: 1px;
+		width: 10px;
+		background: #000;
+		bottom: 50%;
+		right: -10px;
+	}
+
+	.row-before::after {
+		content: attr(data-text);
+		position: absolute;
+		right: -55px;
+		bottom: calc(50% - 10px);
+		width: 40px;
+		text-align: center;
+		background: none;
+	}
+
+	.for-lightning::before {
+		content: '';
+		display: block;
+		width: 4px;
+		height: 4px;
+		background: yellow;
+		margin: auto;
+		border-radius: 50%;
+	}
+
+	.horisontal-scale {
+		position: absolute;
+		bottom: calc(100% + 1px);
+		left: -1px;
+		right: -1px;
+		z-index: 10;
+		display: flex;
+		justify-content: space-around;
+		padding-bottom: 10px;
+	}
+
+	.horisontal-scale [data-text] {
+		position: relative;
+	}
+
+	.horisontal-scale [data-text]::before {
+		content: '';
+		position: absolute;
+		bottom: -10px;
+		height: 10px;
+		width: 1px;
+		background: #000;
+		left: 50%;
+	}
+
+	.vertical-scale {
+		position: absolute;
+		top: -1px;
+		bottom: -1px;
+		z-index: 10;
+		left: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
+		padding-left: 10px;
+	}
+
+	.vertical-scale [data-text] {
+		position: relative;
+	}
+
+	.vertical-scale [data-text]::before {
+		content: '';
+		position: absolute;
+		left: -10px;
+		width: 10px;
+		height: 1px;
+		background: #000;
+		bottom: 50%;
+	}
+
+	.overflow-elem {
+		display: flex;
+		overflow: hidden;
+		flex-wrap: wrap;
+		width: 100%;
+		height: 100%;
+	}
+
+	.fixtures-calculation__rational {
+		position: relative;
+		box-sizing: content-box;
+	}
+</style>
+<!-- <script defer src="/___calculators/js/result.js.js"></script> -->
+<script defer src="result.js.js"></script>
+</body>
+</html>
