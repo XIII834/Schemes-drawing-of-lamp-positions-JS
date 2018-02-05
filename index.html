@@ -9,11 +9,27 @@
 	<script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
 </head>
 <body>
-<form action="#" style="margin: 30px auto 0; width: 1000px; display: flex; justify-content: space-around; height: 100px;">
-	<div><input type="text" class="for-input" name="width" data-default="5" value="" placeholder="5">&nbsp;&nbsp;<p></p>Ширина помещения</div>
-	<div><input type="text" class="for-input" name="length" data-default="4" value="" placeholder="4">&nbsp;&nbsp;<p></p>Длина помещения</div>
-	<div><input type="text" class="for-input" name="quantity" data-default="22" value="" placeholder="22">&nbsp;&nbsp;<p></p>Количество светильников</div>
-	<div><input type="text" class="for-input" name="diameterLightSpot" data-default="1.2" value="" placeholder="1.2">&nbsp;&nbsp;<p></p>Диаметр освещения</div>
+<form class="form" action="#">
+	<div class="for-input-wrapper"><input type="text" class="for-input" name="width" data-default="5" value="" placeholder="Введите данные"><p>Ширина помещения</p>
+		<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+	</div>
+	<div class="for-input-wrapper"><input type="text" class="for-input" name="length" data-default="4" value="" placeholder="Введите данные"><p>Длина помещения</p>
+		<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+	</div>
+	<div class="for-input-wrapper"><input type="text" class="for-input" name="quantity" data-default="22" value="" placeholder="Введите данные"><p>Количество светильников</p>
+		<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+	</div>
+	<div class="for-input-wrapper">
+		<input type="text" class="for-input" name="angleLightSpot" data-default="45" value="" placeholder="Введите данные">
+		<p>Угол освещения °</p>
+		<input type="text" class="for-input" name="heightLightSpot" data-default="10" value="" placeholder="Введите данные">
+		<p>Высота до поверхности</p>
+		<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+
+		<!-- <input type="text" class="for-input" name="diameterLightSpot" data-default="1.2" value="" placeholder="Введите данные">
+		<p>Диаметр освещения</p>
+		<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p> -->
+	</div>
 </form>
 <section style="display: flex; flex-wrap: wrap; width: 1300px; margin: auto; justify-content: center">
 	<div class="rational-wrapper">
@@ -21,23 +37,57 @@
 			<div class="fixtures-calculation__rational" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
 		</div>
 	</div>
-	<div class="fixtures fixtures-mini" data-text="">
-		<div class="fixtures-calculation__min" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
-	</div>
-	<div class="fixtures fixtures-mini" data-text="">
-		<div class="fixtures-calculation__min-1" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
-	</div>
-	<div class="fixtures fixtures-mini" data-text="">
-		<div class="fixtures-calculation__min-2" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
-	</div>
-	<div class="fixtures fixtures-mini" data-text="">
-		<div class="fixtures-calculation__min-3" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+	<div class="fixtures-mini-wrapper">
+		<div class="fixtures fixtures-mini" data-text="">
+			<div class="fixtures-calculation__min" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+		</div>
+		<div class="fixtures fixtures-mini" data-text="">
+			<div class="fixtures-calculation__min-1" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+		</div>
+		<div class="fixtures fixtures-mini" data-text="">
+			<div class="fixtures-calculation__min-2" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+		</div>
+		<div class="fixtures fixtures-mini" data-text="">
+			<div class="fixtures-calculation__min-3" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+		</div>
 	</div>
 </section>
 <br>
 <style>
 	* {
 		box-sizing: border-box;
+	}
+
+	.form {
+		display: flex;
+		justify-content: space-between;
+		padding-top: 30px;
+		max-width: 1000px;
+		margin: auto;
+	}
+
+	.for-input-wrapper {
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		align-items: center;
+		padding: 0 5px;
+	}
+
+	.only-numbers-alert {
+		visibility: hidden;
+		color: red;
+	}
+
+	.only-numbers-alert.only-numbers-alert--active {
+		visibility: visible !important;
+	}
+
+	.fixtures-mini-wrapper {
+		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
 	}
 
 	.rational-wrapper {
@@ -188,7 +238,7 @@
 		display: block;
 		width: 4px;
 		height: 4px;
-		background: yellow;
+		background: gold;
 		margin: auto;
 		border-radius: 50%;
 	}

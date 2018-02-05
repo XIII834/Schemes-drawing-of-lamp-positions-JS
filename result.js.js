@@ -29,7 +29,9 @@ var FixturesCalculation = function () {
       width: Number(dataSet.width),
       length: Number(dataSet.length),
       quantity: Number(dataSet.quantity),
-      diameterLightSpot: Number(Number(dataSet.diameterLightSpot))
+      /*diameterLightSpot: Number(dataSet.diameterLightSpot)*/
+      angleLightSpot: Number(dataSet.angleLightSpot),
+      heightLightSpot: Number(dataSet.heightLightSpot)
     };
 
     this.paramsHtml.cols = Math.sqrt(this.paramsHtml.quantity * this.paramsHtml.width / this.paramsHtml.length);
@@ -214,8 +216,15 @@ var FixturesCalculation = function () {
         }
         var disk = document.createElement('span');
         disk.className = 'for-lightning';
-        disk.style.minWidth = this.proportion * this.paramsHtml.diameterLightSpot + 'px';
-        disk.style.minHeight = this.proportion * this.paramsHtml.diameterLightSpot + 'px';
+        /*disk.style.minWidth = this.proportion * this.paramsHtml.diameterLightSpot + 'px';
+        disk.style.minHeight = this.proportion * this.paramsHtml.diameterLightSpot + 'px';*/
+        var angleInRad = this.paramsHtml.angleLightSpot * Math.PI / 180,
+            h = this.paramsHtml.heightLightSpot,
+
+            /*Формулу расчёта диаметра вывел из теоремы косинусов*/
+            diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
+
+        disk.style.minWidth = disk.style.minHeight = diameter + 'px';
 
         spotElem.appendChild(disk);
         irrr = Array.from(document.querySelector(this.adaptiveParent.selector).children).filter(function (item) {
@@ -258,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function () {
      */
 
     Array.from(document.querySelectorAll('.for-input')).forEach(function (item) {
-      item.oninput = function () {
+      item.onblur = function () {
         var name = item.name;
         var dataValue = item.value || item.dataset.default;
         Array.from(document.querySelectorAll('[class^="fixtures-calculation__"]')).forEach(function (item) {
@@ -275,6 +284,7 @@ document.addEventListener('DOMContentLoaded', function () {
         whoIsOptimal();
       };
     });
+
     /**
       * Обработчик выбора вариантов расположения светильников
       */
@@ -361,5 +371,70 @@ document.addEventListener('DOMContentLoaded', function () {
       	mainFixtureWrapper.replaceChild(cloneChosenFixture, mainFixture);
       	whoIsActive();
       }
+
+    /**
+      * Функция подсчитывающая количество конкретных символов в строке
+      */
+      function numOfSym(str, sym) {
+        let cx = 0;
+        for (let i = 0; i < str.length; i++) {
+          if (str[i] === sym) {
+            cx++;
+          }
+        }
+
+        return cx;
+      }
+
+    /**
+      * Функция проверки - "А число ли вводит пользователь?"
+      */
+      function isEnterNotNumber(str) {
+        for (let i = 0; i < str.length; i++) {
+          if (str[i] !== '.') {
+            if (isNaN(Number(str[i]))) {
+              return i;
+            }
+          } else {
+            if (numOfSym(str, '.') > 1) {
+              return str.lastIndexOf('.');
+            }
+          }
+        }
+
+        return false;
+      }
+
+    /**
+      * Запрет ввода символов, не имеющих отоношения к цифрам
+      */
+      function fieldsFilter(selector) {
+        Array.from(selector.querySelectorAll('input')).forEach((inputField) => {
+            let alertMessage = selector.querySelector('.only-numbers-alert');
+            inputField.oninput = function() {
+              let wrongSignIndex;
+              if ((wrongSignIndex = isEnterNotNumber(inputField.value)) !== false) {
+                inputField.value = inputField.value.substr(0, wrongSignIndex) +
+                                 inputField.value.substr(wrongSignIndex + 1, inputField.value.length);
+
+                if (!alertMessage.classList.contains('only-numbers-alert--active')) {
+                  alertMessage.classList.add('only-numbers-alert--active');
+                }
+                
+              } else {
+                if (alertMessage.classList.contains('only-numbers-alert--active')) {
+                  alertMessage.classList.remove('only-numbers-alert--active');
+                }
+              }
+            }
+        });
+      }
+
+    /**
+      * Прицепляем фильтр вводимых данных на поля
+      */
+      Array.from(document.querySelectorAll('.for-input-wrapper')).forEach((field) => {
+        fieldsFilter(field);
+      });
   };
 });

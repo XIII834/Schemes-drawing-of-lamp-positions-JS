@@ -254,22 +254,41 @@ var Perimeter = function (_InitialForCircuit) {
         this.parent.element.dataset.step = (width / qWidth / this.proportion).toFixed(2) + '/' + (length / qHeight / this.proportion).toFixed(2);
       }
 
-      for (var i = 0; i <= Math.max(qWidth, qHeight) + 1; i++) {
-        item = document.createElement('div');
-        item.className = 'rectangle_item-vertical';
-        item.style.left = width / (~~Math.max(qWidth, qHeight) + 1) * i - 4 + 'px';
-        spotSize = Number(this.datasetParams.spot) * this.proportion;
-        template = '<div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div><div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div>';
-        item.insertAdjacentHTML('afterbegin', template);
-        perimeter.appendChild(item);
-      }
-      for (var _i = 1; _i <= Math.min(qWidth, qHeight); _i++) {
-        item = document.createElement('div');
-        item.className = 'rectangle_item-horizontal';
-        item.style.top = length / (~~Math.min(qWidth, qHeight) + 1) * _i - 4 + 'px';
-        item.insertAdjacentHTML('afterbegin', template);
-        perimeter.appendChild(item);
-      }
+     /* if (width >= length) {*/
+        for (var i = 0; i <= Math.max(qWidth, qHeight) + 1; i++) {
+          item = document.createElement('div');
+          item.className = 'rectangle_item-vertical';
+          item.style.left = width / (~~Math.max(qWidth, qHeight) + 1) * i - 4 + 'px';
+          spotSize = Number(this.datasetParams.spot) * this.proportion;
+          template = '<div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div><div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div>';
+          item.insertAdjacentHTML('afterbegin', template);
+          perimeter.appendChild(item);
+        }
+        for (var _i = 1; _i <= Math.min(qWidth, qHeight); _i++) {
+          item = document.createElement('div');
+          item.className = 'rectangle_item-horizontal';
+          item.style.top = length / (~~Math.min(qWidth, qHeight) + 1) * _i - 4 + 'px';
+          item.insertAdjacentHTML('afterbegin', template);
+          perimeter.appendChild(item);
+        }
+/*      }*/ /*else {
+        for (var i = 0; i <= Math.min(qWidth, qHeight) + 1; i++) {
+          item = document.createElement('div');
+          item.className = 'rectangle_item-vertical';
+          item.style.left = length / (~~Math.min(qWidth, qHeight) + 1) * i - 4 + 'px';
+          spotSize = Number(this.datasetParams.spot) * this.proportion;
+          template = '<div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div><div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div>';
+          item.insertAdjacentHTML('afterbegin', template);
+          perimeter.appendChild(item);
+        }
+        for (var _i = 1; _i <= Math.max(qWidth, qHeight); _i++) {
+          item = document.createElement('div');
+          item.className = 'rectangle_item-horizontal';
+          item.style.top = width / (~~Math.max(qWidth, qHeight) + 1) * _i - 4 + 'px';
+          item.insertAdjacentHTML('afterbegin', template);
+          perimeter.appendChild(item);
+        }
+      }*/
     }
   }, {
     key: 'ellipse',
@@ -502,7 +521,7 @@ window.onload = function () {
         });
       };
     }
-    item.oninput = function () {
+    item.onblur = function () {
       var name = item.name;
       var dataValue = item.value || item.dataset.default;
 
@@ -607,14 +626,18 @@ window.onload = function () {
       widthIndentField = document.querySelector('[name = "deltaWidth"]'),
       lengthIndentField = document.querySelector('[name = "deltaLength"]'),
       quantityField = document.querySelector('[name = "quantity"]'),
-      spotField = document.querySelector('[name = "spot"]');
+      /*spotField = document.querySelector('[name = "spot"]');*/
+      spotAngle = document.querySelector('[name = "spotAngle"]'),
+      spotHeight = document.querySelector('[name = "spotHeight"]');
 
       widthField.value = '';
       lengthField.value = '';
       widthIndentField.value = '';
       lengthIndentField.value = '';
       quantityField.value = '';
-      spotField.value = '';
+      /*spotField.value = '';*/
+      spotAngle.value = '';
+      spotHeight.value = '';
 
   /**
   * Проверка всех полей на корректность заполнения
@@ -629,4 +652,69 @@ window.onload = function () {
 
     return 'correct';
   }
+
+  /**
+    * Функция подсчитывающая количество конкретных символов в строке
+    */
+    function numOfSym(str, sym) {
+      let cx = 0;
+      for (let i = 0; i < str.length; i++) {
+        if (str[i] === sym) {
+          cx++;
+        }
+      }
+
+      return cx;
+    }
+
+  /**
+    * Функция проверки - "А число ли вводит пользователь?"
+    */
+    function isEnterNotNumber(str) {
+      for (let i = 0; i < str.length; i++) {
+        if (str[i] !== '.') {
+          if (isNaN(Number(str[i]))) {
+            return i;
+          }
+        } else {
+          if (numOfSym(str, '.') > 1) {
+            return str.lastIndexOf('.');
+          }
+        }
+      }
+
+      return false;
+    }
+
+  /**
+    * Запрет ввода символов, не имеющих отоношения к цифрам
+    */
+    function fieldsFilter(selector) {
+      Array.from(selector.querySelectorAll('input')).forEach((inputField) => {
+          let alertMessage = selector.querySelector('.only-numbers-alert');
+          inputField.oninput = function() {
+            let wrongSignIndex;
+            if ((wrongSignIndex = isEnterNotNumber(inputField.value)) !== false) {
+              inputField.value = inputField.value.substr(0, wrongSignIndex) +
+                               inputField.value.substr(wrongSignIndex + 1, inputField.value.length);
+
+              if (!alertMessage.classList.contains('only-numbers-alert--active')) {
+                alertMessage.classList.add('only-numbers-alert--active');
+              }
+              
+            } else {
+              if (alertMessage.classList.contains('only-numbers-alert--active')) {
+                alertMessage.classList.remove('only-numbers-alert--active');
+              }
+            }
+          }
+      });
+    }
+
+  /**
+    * Прицепляем фильтр вводимых данных на поля
+    */
+    Array.from(document.querySelectorAll('.form-row')).forEach((field) => {
+      fieldsFilter(field);
+    });
 };
