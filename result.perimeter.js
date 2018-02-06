@@ -227,6 +227,11 @@ var Perimeter = function (_InitialForCircuit) {
         item.style.left = x + 'px';
         item.style.top = y + 'px';
       }
+
+
+
+      this.createSliceElems(11, 11, true);
+
     }
   }, {
     key: 'rectangle',
@@ -249,12 +254,15 @@ var Perimeter = function (_InitialForCircuit) {
       this.parent.element.dataset.optimisedQuantity = quantity;
       qWidth = (isNaN(Math.round(quantity / (2 * (1 + length / width))))) ? 1 : Math.round(quantity / (2 * (1 + length / width)));
       qHeight = ((quantity - 4 - 2 * qWidth) / 2) ? (quantity - 4 - 2 * qWidth) / 2 : 1;
+
+      if (qWidth < 0) qWidth = 0;
+      if (qHeight < 0) qHeight = 0;
+
       if (Number(this.parent.element.dataset.distance)) {
         this.parent.element.classList.add('distance');
         this.parent.element.dataset.step = (width / qWidth / this.proportion).toFixed(2) + '/' + (length / qHeight / this.proportion).toFixed(2);
       }
 
-     /* if (width >= length) {*/
         for (var i = 0; i <= Math.max(qWidth, qHeight) + 1; i++) {
           item = document.createElement('div');
           item.className = 'rectangle_item-vertical';
@@ -271,24 +279,9 @@ var Perimeter = function (_InitialForCircuit) {
           item.insertAdjacentHTML('afterbegin', template);
           perimeter.appendChild(item);
         }
-/*      }*/ /*else {
-        for (var i = 0; i <= Math.min(qWidth, qHeight) + 1; i++) {
-          item = document.createElement('div');
-          item.className = 'rectangle_item-vertical';
-          item.style.left = length / (~~Math.min(qWidth, qHeight) + 1) * i - 4 + 'px';
-          spotSize = Number(this.datasetParams.spot) * this.proportion;
-          template = '<div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div><div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div>';
-          item.insertAdjacentHTML('afterbegin', template);
-          perimeter.appendChild(item);
-        }
-        for (var _i = 1; _i <= Math.max(qWidth, qHeight); _i++) {
-          item = document.createElement('div');
-          item.className = 'rectangle_item-horizontal';
-          item.style.top = width / (~~Math.max(qWidth, qHeight) + 1) * _i - 4 + 'px';
-          item.insertAdjacentHTML('afterbegin', template);
-          perimeter.appendChild(item);
-        }
-      }*/
+
+      this.createSliceElems(qWidth + 2, qHeight + 2, false);
+
     }
   }, {
     key: 'ellipse',
@@ -328,6 +321,9 @@ var Perimeter = function (_InitialForCircuit) {
         item.style.left = x + 'px';
         item.style.top = y + 'px';
       }
+
+      this.createSliceElems(quantity / 2 + 1, quantity / 2 + 1, false);
+
     } //  ellipse
 
   }, {
@@ -439,21 +435,24 @@ var Perimeter = function (_InitialForCircuit) {
       }
 
       quantity = cols * rows;
+
+      if (widthParentOld < heightParentOld) {
+        cols = cols + rows;
+        rows = cols - rows;
+        cols = cols - rows;
+      }
+
       this.parent.element.classList.add('optimised');
       this.parent.element.dataset.optimisedQuantity = quantity;
       if (Number(this.parent.element.dataset.scale)) {
 
-        if (widthParentOld >= heightParentOld) {
           horScale.className = 'horisontal-scale';
           verScale.className = 'vertical-scale';
-        } else {
-          horScale.className = 'vertical-scale';
-          verScale.className = 'horisontal-scale';
-        }
 
         perimeterElem.parentElement.appendChild(horScale);
         perimeterElem.parentElement.appendChild(verScale);
       }
+
       for (var i = 1; i <= quantity; i++) {
         spotElem = document.createElement('div');
         spotElem.className = className;
@@ -486,6 +485,90 @@ var Perimeter = function (_InitialForCircuit) {
         item.style.width = spotWidth + 'px';
         item.style.height = spotHeight + 'px';
       });
+    }
+  }, {
+    key: 'createSliceElems',
+    value: function createSliceElems(cols, rows, isDisk) {
+      var className = this.spotItem.className;
+      var spotElem = void 0;
+      var widthParentOld = this.datasetParams.width;
+      var heightParentOld = this.datasetParams.length;
+      var contRows = 0;
+      var horScale = document.createElement('aside');
+      var horScaleChild = void 0;
+      var verScale = document.createElement('aside');
+      var verScaleChild = void 0;
+      var perimeterElem = this.perimeter.element;
+      var overflowElem = document.createElement('div');
+      overflowElem.classList.add('overflow-elem');
+      perimeterElem.appendChild(overflowElem);
+
+      var quantity = cols * rows;
+
+      if (widthParentOld < heightParentOld) {
+        cols = cols + rows;
+        rows = cols - rows;
+        cols = cols - rows;
+      }
+
+      if (Number(this.parent.element.dataset.scale)) {
+
+          horScale.className = 'horisontal-scale';
+          verScale.className = 'vertical-scale';
+
+        perimeterElem.parentElement.appendChild(horScale);
+        perimeterElem.parentElement.appendChild(verScale);
+      }
+
+      if (!isDisk) {
+        for (var i = 1; i <= quantity; i++) {
+          spotElem = document.createElement('div');
+          spotElem.className = className;
+          if (Number(this.parent.element.dataset.scale)) {
+            if (i <= cols) {
+              horScaleChild = document.createElement('span');
+              horScaleChild.dataset.text = (widthParentOld / cols * i - widthParentOld / cols / 2).toFixed(2);
+              horScaleChild.innerHTML = horScaleChild.dataset.text;
+              horScale.appendChild(horScaleChild);
+            }
+            if (i % cols === 0) {
+              verScaleChild = document.createElement('span');
+              verScaleChild.dataset.text = (heightParentOld / rows * ++contRows - heightParentOld / rows / 2).toFixed(2);
+              verScaleChild.innerHTML = verScaleChild.dataset.text;
+              verScale.appendChild(verScaleChild);
+            }
+          }
+        }
+      } else {
+
+        var leftIndent;
+        if (document.querySelector('.size')) {
+          leftIndent = (parseInt(getComputedStyle(document.querySelector('.size')).width) - this.perimeter.width) / 2;
+        }
+
+
+
+        for (var i = 1; i <= quantity; i++) {
+
+
+          spotElem = document.createElement('div');
+          spotElem.className = className;
+          if (Number(this.parent.element.dataset.scale)) {
+            if (i % cols === 0) {
+              verScaleChild = document.createElement('span');
+              verScaleChild.dataset.text = (heightParentOld / rows * ++contRows - heightParentOld / rows / 2).toFixed(2);
+              verScaleChild.innerHTML = verScaleChild.dataset.text;
+              verScale.appendChild(verScaleChild);
+
+              horScaleChild = document.createElement('span');
+              horScaleChild.dataset.text = Number(verScaleChild.dataset.text) + leftIndent;
+              horScaleChild.innerHTML = verScaleChild.dataset.text;
+              horScale.appendChild(horScaleChild);
+            }
+          }
+        }
+      }
+
     }
   }, {
     key: 'initPerimeter',
@@ -597,6 +680,7 @@ window.onload = function () {
       $forEach('.' + schemeActive, function (item) {
         item.classList.remove(schemeActive);
       });
+
       item.classList.add('scheme-active');
       document.querySelector('.scheme-parent_perimeter_scale').dataset.type = this.dataset.type;
       new Perimeter('.scheme-parent_perimeter_scale').initPerimeter({
