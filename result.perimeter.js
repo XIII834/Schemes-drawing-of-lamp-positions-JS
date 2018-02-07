@@ -76,7 +76,6 @@ var InitialForCircuit = function () {
         newLength = newWidth / proportion;
       }
 
-
       if (oldWidth < oldLength) {
         newWidth = newWidth + newLength;
         newLength = newWidth - newLength;
@@ -217,8 +216,18 @@ var Perimeter = function (_InitialForCircuit) {
         item.className = 'scheme-parent__point';
         light = document.createElement('span');
         light.className = this.spotItemInner.className;
-        light.style.minWidth = Number(this.datasetParams.spot) * this.proportion + 'px';
-        light.style.minHeight = Number(this.datasetParams.spot) * this.proportion + 'px';
+
+        /*Вычисляем диаметр светового пятна*/
+        var angleInRad = Number(this.datasetParams.spotAngle) * Math.PI / 180,
+            h = Number(this.datasetParams.spotHeight),
+            diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
+
+        /*light.style.minWidth = Number(this.datasetParams.spot) * this.proportion + 'px';
+        light.style.minHeight = Number(this.datasetParams.spot) * this.proportion + 'px';*/
+
+        light.style.minWidth = Number(diameter) * this.proportion + 'px';
+        light.style.minHeight = Number(diameter) * this.proportion + 'px';
+
         item.appendChild(light);
         perimeter.appendChild(item);
         cornerRadian = i * Math.PI / 180;
@@ -227,11 +236,6 @@ var Perimeter = function (_InitialForCircuit) {
         item.style.left = x + 'px';
         item.style.top = y + 'px';
       }
-
-
-
-      this.createSliceElems(11, 11, true);
-
     }
   }, {
     key: 'rectangle',
@@ -267,7 +271,15 @@ var Perimeter = function (_InitialForCircuit) {
           item = document.createElement('div');
           item.className = 'rectangle_item-vertical';
           item.style.left = width / (~~Math.max(qWidth, qHeight) + 1) * i - 4 + 'px';
-          spotSize = Number(this.datasetParams.spot) * this.proportion;
+
+          /*Вычисляем диаметр светового пятна*/
+          var angleInRad = Number(this.datasetParams.spotAngle) * Math.PI / 180,
+              h = Number(this.datasetParams.spotHeight),
+              diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
+
+          spotSize = Number(diameter) * this.proportion;
+
+          /*spotSize = Number(this.datasetParams.spot) * this.proportion;*/
           template = '<div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div><div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div>';
           item.insertAdjacentHTML('afterbegin', template);
           perimeter.appendChild(item);
@@ -311,8 +323,17 @@ var Perimeter = function (_InitialForCircuit) {
         item.className = 'scheme-parent__point';
         light = document.createElement('span');
         light.className = this.spotItemInner.className;
-        light.style.minWidth = Number(this.datasetParams.spot) * this.proportion + 'px';
-        light.style.minHeight = Number(this.datasetParams.spot) * this.proportion + 'px';
+
+        /*Вычисляем диаметр светового пятна*/
+        var angleInRad = Number(this.datasetParams.spotAngle) * Math.PI / 180,
+            h = Number(this.datasetParams.spotHeight),
+            diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
+
+        light.style.minWidth = Number(diameter) * this.proportion + 'px';
+        light.style.minHeight = Number(diameter) * this.proportion + 'px';
+
+        /*light.style.minWidth = Number(this.datasetParams.spot) * this.proportion + 'px';
+        light.style.minHeight = Number(this.datasetParams.spot) * this.proportion + 'px';*/
         item.appendChild(light);
         perimeter.appendChild(item);
         cornerRadian = i * Math.PI / 180;
@@ -473,8 +494,17 @@ var Perimeter = function (_InitialForCircuit) {
 
         var disk = document.createElement('span');
         disk.className = this.spotItemInner.className;
-        disk.style.minWidth = Number(this.datasetParams.spot) * this.proportion + 'px';
-        disk.style.minHeight = Number(this.datasetParams.spot) * this.proportion + 'px';
+
+        /*Вычисляем диаметр светового пятна*/
+        var angleInRad = Number(this.datasetParams.spotAngle) * Math.PI / 180,
+            h = Number(this.datasetParams.spotHeight),
+            diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
+
+        disk.style.minWidth = Number(diameter) * this.proportion + 'px';
+        disk.style.minHeight = Number(diameter) * this.proportion + 'px';
+
+        /*disk.style.minWidth = Number(this.datasetParams.spot) * this.proportion + 'px';
+        disk.style.minHeight = Number(this.datasetParams.spot) * this.proportion + 'px';*/
         spotElem.appendChild(disk);
         irrr = Array.from(perimeterElem.children).filter(function (item) {
           return item.classList.contains('overflow-elem') ? 1 : 0;
@@ -541,34 +571,51 @@ var Perimeter = function (_InitialForCircuit) {
         }
       } else {
 
-        var leftIndent;
-        if (document.querySelector('.size')) {
-          leftIndent = (parseInt(getComputedStyle(document.querySelector('.size')).width) - this.perimeter.width) / 2;
-        }
+        var circleIndent = (widthParentOld !== heightParentOld) ?
+                         (Math.max(widthParentOld, heightParentOld) - Math.min(widthParentOld, heightParentOld)) / 2 : 0;
 
+        if (widthParentOld < heightParentOld) {
 
+          for (var i = 1; i <= quantity; i++) {
+            spotElem = document.createElement('div');
+            spotElem.className = className;
+            if (Number(this.parent.element.dataset.scale)) {
+              if (i <= cols) {
+                horScaleChild = document.createElement('span');
+                horScaleChild.dataset.text = (widthParentOld / cols * i - widthParentOld / cols / 2).toFixed(2);
+                horScaleChild.innerHTML = horScaleChild.dataset.text;
+                horScale.appendChild(horScaleChild);
 
-        for (var i = 1; i <= quantity; i++) {
-
-
-          spotElem = document.createElement('div');
-          spotElem.className = className;
-          if (Number(this.parent.element.dataset.scale)) {
-            if (i % cols === 0) {
-              verScaleChild = document.createElement('span');
-              verScaleChild.dataset.text = (heightParentOld / rows * ++contRows - heightParentOld / rows / 2).toFixed(2);
-              verScaleChild.innerHTML = verScaleChild.dataset.text;
-              verScale.appendChild(verScaleChild);
-
-              horScaleChild = document.createElement('span');
-              horScaleChild.dataset.text = Number(verScaleChild.dataset.text) + leftIndent;
-              horScaleChild.innerHTML = verScaleChild.dataset.text;
-              horScale.appendChild(horScaleChild);
+                verScaleChild = document.createElement('span');
+                verScaleChild.dataset.text = Number(horScaleChild.dataset.text);
+                verScaleChild.innerHTML = (Number(verScaleChild.dataset.text) + circleIndent).toFixed(2);
+                verScale.appendChild(verScaleChild);
+              }
             }
           }
+
+        } else {
+
+          for (var i = 1; i <= quantity; i++) {
+            spotElem = document.createElement('div');
+            spotElem.className = className;
+            if (Number(this.parent.element.dataset.scale)) {
+              if (i % cols === 0) {
+                verScaleChild = document.createElement('span');
+                verScaleChild.dataset.text = (heightParentOld / rows * ++contRows - heightParentOld / rows / 2).toFixed(2);
+                verScaleChild.innerHTML = verScaleChild.dataset.text;
+                verScale.appendChild(verScaleChild);
+
+                horScaleChild = document.createElement('span');
+                horScaleChild.dataset.text = Number(verScaleChild.dataset.text);
+                horScaleChild.innerHTML = (Number(horScaleChild.dataset.text) + circleIndent).toFixed(2);
+                horScale.appendChild(horScaleChild);
+              }
+            }
+          }
+
         }
       }
-
     }
   }, {
     key: 'initPerimeter',
