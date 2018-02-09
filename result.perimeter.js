@@ -222,9 +222,6 @@ var Perimeter = function (_InitialForCircuit) {
             h = Number(this.datasetParams.spotHeight),
             diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
 
-        /*light.style.minWidth = Number(this.datasetParams.spot) * this.proportion + 'px';
-        light.style.minHeight = Number(this.datasetParams.spot) * this.proportion + 'px';*/
-
         light.style.minWidth = Number(diameter) * this.proportion + 'px';
         light.style.minHeight = Number(diameter) * this.proportion + 'px';
 
@@ -239,8 +236,9 @@ var Perimeter = function (_InitialForCircuit) {
     }
   }, {
     key: 'rectangle',
-    value: function rectangle(newQuantity) {
+    value: function rectangle(/*newQuantity*/) {
       var quantity = this.datasetParams.quantity;
+      if (quantity % 2 !== 0) quantity++;
       var perimeter = this.perimeter.element;
       var width = this.perimeter.width;
       var length = this.perimeter.length;
@@ -249,58 +247,104 @@ var Perimeter = function (_InitialForCircuit) {
       var qHeight = void 0;
       var spotSize = void 0;
       var template = void 0;
-      if (newQuantity) {
+      var oldWidth = this.datasetParams.width;
+      var oldLength = this.datasetParams.length;
+
+      /*if (newQuantity) {
         quantity += 4 - quantity % 4;
       } else if (quantity % 2 !== 0) {
         quantity += 2 - quantity % 2;
-      }
-
-      /*if (width < length) {
-        width = width + length;
-        length = width - length;
-        width = width - length;
       }*/
+
+      /*Вычисляем диаметр светового пятна*/
+      var angleInRad = Number(this.datasetParams.spotAngle) * Math.PI / 180,
+          h = Number(this.datasetParams.spotHeight),
+          diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
+
+      spotSize = Number(diameter) * this.proportion;
 
       this.parent.element.classList.add('optimised');
       this.parent.element.dataset.optimisedQuantity = quantity;
-      qWidth = (isNaN(Math.round(quantity / (2 * (1 + length / width))))) ? 1 : Math.round(quantity / (2 * (1 + length / width)));
-      qHeight = ((quantity - 4 - 2 * qWidth) / 2) ? (quantity - 4 - 2 * qWidth) / 2 : 1;
+      /*qWidth = (isNaN(Math.round(quantity / (2 * (1 + length / width))))) ? 1 : Math.round(quantity / (2 * (1 + length / width)));
+      qHeight = ((quantity - 4 - 2 * qWidth) / 2) ? (quantity - 4 - 2 * qWidth) / 2 : 1;*/
 
-      if (qWidth < 0) qWidth = 0;
-      if (qHeight < 0) qHeight = 0;
+      var proportion = Math.round(Math.max(oldWidth, oldLength) / Math.min(oldWidth, oldLength));
+
+      if (width < length) {
+        qWidth = ~~((quantity / 2) / (proportion + 1));
+
+        qHeight = (quantity / 2) - qWidth;
+      } else {
+        qHeight = ~~((quantity / 2) / (proportion + 1));
+
+        qWidth = (quantity / 2) - qHeight;
+      }
+
+      if (quantity === 6) {
+        qWidth = (width < length) ? 1 : 2;
+        qHeight = (width < length) ? 2 : 1;
+      }
+
+      if (quantity === 4) {
+        for (var i = 0; i <= 1; i++) {
+          item = document.createElement('div');
+          item.className = 'rectangle_item-vertical';
+          item.style.left = width * i - 4 + 'px';
+
+          template = '<div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div><div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div>';
+          item.insertAdjacentHTML('afterbegin', template);
+          perimeter.appendChild(item);
+        }
+      } else {
+        for (var i = 0; i <= qWidth; i++) {
+          item = document.createElement('div');
+          item.className = 'rectangle_item-vertical';
+          item.style.left = width / qWidth * i - 4 + 'px';
+
+          template = '<div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div><div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div>';
+          item.insertAdjacentHTML('afterbegin', template);
+          perimeter.appendChild(item);
+        }
+
+        for (var j = 1; j < qHeight; j++) {
+          item = document.createElement('div');
+          item.className = 'rectangle_item-horizontal';
+          item.style.top = length / qHeight * j - 4 + 'px';
+          item.insertAdjacentHTML('afterbegin', template);
+          perimeter.appendChild(item);
+        }
+      }
+
+      if (quantity === 2) {
+        Array.from(document.querySelectorAll('.rectangle_item-vertical')).forEach((rec) => {
+          rec.style.left = '49%';
+        });
+      }
 
       if (Number(this.parent.element.dataset.distance)) {
         this.parent.element.classList.add('distance');
         this.parent.element.dataset.step = (width / qWidth / this.proportion).toFixed(2) + '/' + (length / qHeight / this.proportion).toFixed(2);
       }
 
-      for (var i = 0; i <= Math.max(qWidth, qHeight); i++) {
-        item = document.createElement('div');
-        item.className = 'rectangle_item-vertical';
-        item.style.left = width / (~~Math.max(qWidth, qHeight)) * i - 4 + 'px';
+      if (width < length) {
 
-        /*Вычисляем диаметр светового пятна*/
-        var angleInRad = Number(this.datasetParams.spotAngle) * Math.PI / 180,
-            h = Number(this.datasetParams.spotHeight),
-            diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
+        if (quantity === 4) {
+          this.createSliceElems(2, 2, false);
+        } else {
+          this.createSliceElems(qHeight + 1, qWidth + 1, false);
+        }
+        
+      } else {
 
-        spotSize = Number(diameter) * this.proportion;
+        if (quantity === 2) {
+          this.createSliceElems(1, 2, false);
+        } else if (quantity === 4) {
+          this.createSliceElems(2, 2, false);
+        } else {
+          this.createSliceElems(qWidth + 1, qHeight + 1, false);
+        }
 
-        /*spotSize = Number(this.datasetParams.spot) * this.proportion;*/
-        template = '<div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div><div class="scheme-parent__point">\n            <div class="' + this.spotItemInner.className + '" \n            style="min-height: ' + spotSize + 'px;\n            min-width: ' + spotSize + 'px;"></div>\n        </div>';
-        item.insertAdjacentHTML('afterbegin', template);
-        perimeter.appendChild(item);
       }
-      for (var _i = 1; _i <= Math.min(qWidth, qHeight); _i++) {
-        item = document.createElement('div');
-        item.className = 'rectangle_item-horizontal';
-        item.style.top = length / (~~Math.min(qWidth, qHeight) + 1) * _i - 4 + 'px';
-        item.insertAdjacentHTML('afterbegin', template);
-        perimeter.appendChild(item);
-      }
-      
-      this.createSliceElems(qWidth + 2, qHeight + 2, false);
-
     }
   }, {
     key: 'ellipse',
@@ -339,8 +383,6 @@ var Perimeter = function (_InitialForCircuit) {
         light.style.minWidth = Number(diameter) * this.proportion + 'px';
         light.style.minHeight = Number(diameter) * this.proportion + 'px';
 
-        /*light.style.minWidth = Number(this.datasetParams.spot) * this.proportion + 'px';
-        light.style.minHeight = Number(this.datasetParams.spot) * this.proportion + 'px';*/
         item.appendChild(light);
         perimeter.appendChild(item);
         cornerRadian = i * Math.PI / 180;
@@ -510,8 +552,6 @@ var Perimeter = function (_InitialForCircuit) {
         disk.style.minWidth = Number(diameter) * this.proportion + 'px';
         disk.style.minHeight = Number(diameter) * this.proportion + 'px';
 
-        /*disk.style.minWidth = Number(this.datasetParams.spot) * this.proportion + 'px';
-        disk.style.minHeight = Number(this.datasetParams.spot) * this.proportion + 'px';*/
         spotElem.appendChild(disk);
         irrr = Array.from(perimeterElem.children).filter(function (item) {
           return item.classList.contains('overflow-elem') ? 1 : 0;
