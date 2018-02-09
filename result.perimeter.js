@@ -233,6 +233,17 @@ var Perimeter = function (_InitialForCircuit) {
         item.style.left = x + 'px';
         item.style.top = y + 'px';
       }
+
+      if (quantity % 2 !== 0) {
+        this.createSliceElems(Math.ceil(quantity / 2), quantity, true);
+      } else {
+        if (quantity % 4 === 0) {
+          this.createSliceElems(quantity / 2 + 1, quantity / 2 + 1, true);
+        } else {
+          this.createSliceElems(quantity / 2 + 1, quantity / 2, true);
+        }
+      }
+
     }
   }, {
     key: 'rectangle',
@@ -599,8 +610,6 @@ var Perimeter = function (_InitialForCircuit) {
 
       if (!isDisk) {
         for (var i = 1; i <= quantity; i++) {
-          spotElem = document.createElement('div');
-          spotElem.className = className;
           if (Number(this.parent.element.dataset.scale)) {
             if (i <= cols) {
               horScaleChild = document.createElement('span');
@@ -618,47 +627,43 @@ var Perimeter = function (_InitialForCircuit) {
         }
       } else {
 
-        var circleIndent = (widthParentOld !== heightParentOld) ?
-                         (Math.max(widthParentOld, heightParentOld) - Math.min(widthParentOld, heightParentOld)) / 2 : 0;
+        var cDeltaWidth = this.datasetParams.deltaWidth,
+            cDeltaLength = this.datasetParams.deltaLength,
+            cDelta = (widthParentOld < heightParentOld) ? cDeltaWidth : cDeltaLength,
+            cDiameter = Math.min(widthParentOld, heightParentOld) - cDelta * 2;
+
+        var circleCoef = (Math.max(widthParentOld, heightParentOld) - cDiameter) / 2;
 
         if (widthParentOld < heightParentOld) {
 
-          for (var i = 1; i <= quantity; i++) {
-            spotElem = document.createElement('div');
-            spotElem.className = className;
-            if (Number(this.parent.element.dataset.scale)) {
-              if (i <= cols) {
-                horScaleChild = document.createElement('span');
-                horScaleChild.dataset.text = (widthParentOld / cols * i - widthParentOld / cols / 2).toFixed(2);
-                horScaleChild.innerHTML = horScaleChild.dataset.text;
-                horScale.appendChild(horScaleChild);
+          for (var i = 1; i <= cols; i++) {
+            verScaleChild = document.createElement('span');
+            verScaleChild.dataset.text = (cDiameter / cols * i - (cDiameter / cols / 2) + circleCoef).toFixed(2);
+            verScaleChild.innerHTML = verScaleChild.dataset.text;
+            verScale.appendChild(verScaleChild);
+          }
 
-                verScaleChild = document.createElement('span');
-                verScaleChild.dataset.text = Number(horScaleChild.dataset.text);
-                verScaleChild.innerHTML = (Number(verScaleChild.dataset.text) + circleIndent).toFixed(2);
-                verScale.appendChild(verScaleChild);
-              }
-            }
+          for (var j = 1; j <= rows; j++) {
+            horScaleChild = document.createElement('span');
+            horScaleChild.dataset.text = (cDiameter / rows * j - (cDiameter / rows / 2) + cDeltaWidth).toFixed(2);
+            horScaleChild.innerHTML = horScaleChild.dataset.text;
+            horScale.appendChild(horScaleChild);
           }
 
         } else {
 
-          for (var i = 1; i <= quantity; i++) {
-            spotElem = document.createElement('div');
-            spotElem.className = className;
-            if (Number(this.parent.element.dataset.scale)) {
-              if (i % cols === 0) {
-                verScaleChild = document.createElement('span');
-                verScaleChild.dataset.text = (heightParentOld / rows * ++contRows - heightParentOld / rows / 2).toFixed(2);
-                verScaleChild.innerHTML = verScaleChild.dataset.text;
-                verScale.appendChild(verScaleChild);
+          for (var i = 1; i <= cols; i++) {
+            horScaleChild = document.createElement('span');
+            horScaleChild.dataset.text = (cDiameter / cols * i - (cDiameter / cols / 2) + circleCoef).toFixed(2);
+            horScaleChild.innerHTML = horScaleChild.dataset.text;
+            horScale.appendChild(horScaleChild);
+          }
 
-                horScaleChild = document.createElement('span');
-                horScaleChild.dataset.text = Number(verScaleChild.dataset.text);
-                horScaleChild.innerHTML = (Number(horScaleChild.dataset.text) + circleIndent).toFixed(2);
-                horScale.appendChild(horScaleChild);
-              }
-            }
+          for (var j = 1; j <= rows; j++) {
+            verScaleChild = document.createElement('span');
+            verScaleChild.dataset.text = (cDiameter / rows * j - (cDiameter / rows / 2) + cDeltaWidth).toFixed(2);
+            verScaleChild.innerHTML = verScaleChild.dataset.text;
+            verScale.appendChild(verScaleChild);
           }
 
         }
