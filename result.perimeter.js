@@ -804,14 +804,14 @@ window.onload = function () {
   /**
   * Определим несколько переменных нужных для функции areAllFieldsFilledCorrect()
   */
-  var widthField = document.querySelector('[name = "width"]'),
-      lengthField = document.querySelector('[name = "length"]'),
-      widthIndentField = document.querySelector('[name = "deltaWidth"]'),
-      lengthIndentField = document.querySelector('[name = "deltaLength"]'),
-      quantityField = document.querySelector('[name = "quantity"]'),
+  var widthField = document.querySelector('[name="width"]'),
+      lengthField = document.querySelector('[name="length"]'),
+      widthIndentField = document.querySelector('[name="deltaWidth"]'),
+      lengthIndentField = document.querySelector('[name="deltaLength"]'),
+      quantityField = document.querySelector('[name="quantity"]'),
       /*spotField = document.querySelector('[name = "spot"]');*/
-      spotAngle = document.querySelector('[name = "spotAngle"]'),
-      spotHeight = document.querySelector('[name = "spotHeight"]');
+      spotAngle = document.querySelector('[name="spotAngle"]'),
+      spotHeight = document.querySelector('[name="spotHeight"]');
 
       widthField.value = '';
       lengthField.value = '';

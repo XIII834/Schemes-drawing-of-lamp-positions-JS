@@ -224,7 +224,7 @@ var FixturesCalculation = function () {
             /*Формулу расчёта диаметра вывел из теоремы косинусов*/
             diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
 
-        disk.style.minWidth = disk.style.minHeight = diameter + 'px';
+        disk.style.minWidth = disk.style.minHeight = this.proportion * diameter + 'px';
 
         spotElem.appendChild(disk);
         irrr = Array.from(document.querySelector(this.adaptiveParent.selector).children).filter(function (item) {
@@ -406,27 +406,39 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
     /**
-      * Запрет ввода символов, не имеющих отоношения к цифрам
+      * Функция проверки - "А число ли вводит пользователь?"
+      * @param {string} строка которая проверяется на числовитость
       */
+      function isNumeric(str) {
+        return !isNaN(parseFloat(str)) && isFinite(str);
+      }
+
+    /**
+      * Запрет ввода символов, не имеющих отоношения к цифрам
+      * @param {DOM object} селектор обёртки, в которой input и
+      * скрытое сообщение об ошибке 
+      */
+
+
       function fieldsFilter(selector) {
         Array.from(selector.querySelectorAll('input')).forEach((inputField) => {
-            let alertMessage = selector.querySelector('.only-numbers-alert');
-            inputField.oninput = function() {
-              let wrongSignIndex;
-              if ((wrongSignIndex = isEnterNotNumber(inputField.value)) !== false) {
-                inputField.value = inputField.value.substr(0, wrongSignIndex) +
-                                 inputField.value.substr(wrongSignIndex + 1, inputField.value.length);
+          let alertMessage = selector.querySelector('.only-numbers-alert');
+          inputField.oninput = function() {
+            let wrongSignIndex;
+            if ((wrongSignIndex = isEnterNotNumber(inputField.value)) !== false) {
+              inputField.value = inputField.value.substr(0, wrongSignIndex) +
+                               inputField.value.substr(wrongSignIndex + 1, inputField.value.length);
 
-                if (!alertMessage.classList.contains('only-numbers-alert--active')) {
-                  alertMessage.classList.add('only-numbers-alert--active');
-                }
-                
-              } else {
-                if (alertMessage.classList.contains('only-numbers-alert--active')) {
-                  alertMessage.classList.remove('only-numbers-alert--active');
-                }
+              if (!alertMessage.classList.contains('only-numbers-alert--active')) {
+                alertMessage.classList.add('only-numbers-alert--active');
+              }
+              
+            } else {
+              if (alertMessage.classList.contains('only-numbers-alert--active')) {
+                alertMessage.classList.remove('only-numbers-alert--active');
               }
             }
+          }
         });
       }
 
