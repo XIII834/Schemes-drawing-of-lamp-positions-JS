@@ -289,6 +289,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         whoIsActive();
         whoIsOptimal();
+	      
       };
     });
 
