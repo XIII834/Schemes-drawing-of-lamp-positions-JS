@@ -29,7 +29,7 @@ var FixturesCalculation = function () {
       width: Number(dataSet.width),
       length: Number(dataSet.length),
       quantity: Number(dataSet.quantity),
-      /*diameterLightSpot: Number(dataSet.diameterLightSpot)*/
+      diameterLightSpot: Number(dataSet.diameterLightSpot),
       angleLightSpot: Number(dataSet.angleLightSpot),
       heightLightSpot: Number(dataSet.heightLightSpot)
     };
@@ -216,13 +216,21 @@ var FixturesCalculation = function () {
         }
         var disk = document.createElement('span');
         disk.className = 'for-lightning';
+
+        if (this.paramsHtml.diameterLightSpot === 0 || isNaN(this.paramsHtml.diameterLightSpot)) {
+          var angleInRad = this.paramsHtml.angleLightSpot * Math.PI / 180,
+              h = this.paramsHtml.heightLightSpot,
+
+              /*Формулу расчёта диаметра вывел из теоремы косинусов*/
+              diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
+
+              if (!isNaN(diameter)) document.querySelector('[name="diameterLightSpot"]').value = diameter.toFixed(2);
+        } else {
+          diameter = this.paramsHtml.diameterLightSpot;
+        }
+
         /*disk.style.minWidth = this.proportion * this.paramsHtml.diameterLightSpot + 'px';
         disk.style.minHeight = this.proportion * this.paramsHtml.diameterLightSpot + 'px';*/
-        var angleInRad = this.paramsHtml.angleLightSpot * Math.PI / 180,
-            h = this.paramsHtml.heightLightSpot,
-
-            /*Формулу расчёта диаметра вывел из теоремы косинусов*/
-            diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
 
         disk.style.minWidth = disk.style.minHeight = this.proportion * diameter + 'px';
 
@@ -265,7 +273,6 @@ document.addEventListener('DOMContentLoaded', function () {
     /**
      * Обработчик формы
      */
-
     Array.from(document.querySelectorAll('.for-input')).forEach(function (item) {
       item.onblur = function () {
         var name = item.name;
@@ -273,7 +280,7 @@ document.addEventListener('DOMContentLoaded', function () {
         Array.from(document.querySelectorAll('[class^="fixtures-calculation__"]')).forEach(function (item) {
           item.dataset[name] = dataValue;
         });
-        item.placeholder = dataValue;
+        /*item.placeholder = dataValue;*/
         new FixturesCalculation('.fixtures-calculation__min').init().minMin();
         new FixturesCalculation('.fixtures-calculation__min-1').init().maxMin();
         new FixturesCalculation('.fixtures-calculation__min-2').init().minMax();
@@ -373,39 +380,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
     /**
-      * Функция подсчитывающая количество конкретных символов в строке
-      */
-      function numOfSym(str, sym) {
-        let cx = 0;
-        for (let i = 0; i < str.length; i++) {
-          if (str[i] === sym) {
-            cx++;
-          }
-        }
-
-        return cx;
-      }
-
-    /**
-      * Функция проверки - "А число ли вводит пользователь?"
-      */
-      function isEnterNotNumber(str) {
-        for (let i = 0; i < str.length; i++) {
-          if (str[i] !== '.') {
-            if (isNaN(Number(str[i]))) {
-              return i;
-            }
-          } else {
-            if (numOfSym(str, '.') > 1) {
-              return str.lastIndexOf('.');
-            }
-          }
-        }
-
-        return false;
-      }
-
-    /**
       * Функция проверки - "А число ли вводит пользователь?"
       * @param {string} строка которая проверяется на числовитость
       */
@@ -414,39 +388,27 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
     /**
-      * Запрет ввода символов, не имеющих отоношения к цифрам
-      * @param {DOM object} селектор обёртки, в которой input и
-      * скрытое сообщение об ошибке 
+      * Прицепляем фильтр вводимых данных на поля
       */
-
-
-      function fieldsFilter(selector) {
-        Array.from(selector.querySelectorAll('input')).forEach((inputField) => {
-          let alertMessage = selector.querySelector('.only-numbers-alert');
+      Array.from(document.querySelectorAll('.for-input-wrapper')).forEach((field) => {
+        Array.from(field.querySelectorAll('input')).forEach((inputField) => {
+          let alertMessage = field.querySelector('.input-error');
+          inputField.onkeydown = function() {
+            inputField.lastValue = inputField.value;
+          }
           inputField.oninput = function() {
-            let wrongSignIndex;
-            if ((wrongSignIndex = isEnterNotNumber(inputField.value)) !== false) {
-              inputField.value = inputField.value.substr(0, wrongSignIndex) +
-                               inputField.value.substr(wrongSignIndex + 1, inputField.value.length);
-
-              if (!alertMessage.classList.contains('only-numbers-alert--active')) {
-                alertMessage.classList.add('only-numbers-alert--active');
+            if (!isNumeric(inputField.value) && inputField.value !== '') {
+              inputField.value = inputField.lastValue;
+              if (!alertMessage.classList.contains('input-error--active')) {
+                alertMessage.classList.add('input-error--active');
               }
-              
             } else {
-              if (alertMessage.classList.contains('only-numbers-alert--active')) {
-                alertMessage.classList.remove('only-numbers-alert--active');
+              if (alertMessage.classList.contains('input-error--active')) {
+                alertMessage.classList.remove('input-error--active');
               }
             }
           }
         });
-      }
-
-    /**
-      * Прицепляем фильтр вводимых данных на поля
-      */
-      Array.from(document.querySelectorAll('.for-input-wrapper')).forEach((field) => {
-        fieldsFilter(field);
       });
   };
 });

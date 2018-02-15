@@ -835,69 +835,37 @@ window.onload = function () {
 
     return 'correct';
   }
-
-  /**
-    * Функция подсчитывающая количество конкретных символов в строке
-    */
-    function numOfSym(str, sym) {
-      let cx = 0;
-      for (let i = 0; i < str.length; i++) {
-        if (str[i] === sym) {
-          cx++;
-        }
-      }
-
-      return cx;
-    }
-
+  
   /**
     * Функция проверки - "А число ли вводит пользователь?"
+    * @param {string} строка которая проверяется на числовитость
     */
-    function isEnterNotNumber(str) {
-      for (let i = 0; i < str.length; i++) {
-        if (str[i] !== '.') {
-          if (isNaN(Number(str[i]))) {
-            return i;
-          }
-        } else {
-          if (numOfSym(str, '.') > 1) {
-            return str.lastIndexOf('.');
-          }
-        }
-      }
-
-      return false;
-    }
-
-  /**
-    * Запрет ввода символов, не имеющих отоношения к цифрам
-    */
-    function fieldsFilter(selector) {
-      Array.from(selector.querySelectorAll('input')).forEach((inputField) => {
-          let alertMessage = selector.querySelector('.only-numbers-alert');
-          inputField.oninput = function() {
-            let wrongSignIndex;
-            if ((wrongSignIndex = isEnterNotNumber(inputField.value)) !== false) {
-              inputField.value = inputField.value.substr(0, wrongSignIndex) +
-                               inputField.value.substr(wrongSignIndex + 1, inputField.value.length);
-
-              if (!alertMessage.classList.contains('only-numbers-alert--active')) {
-                alertMessage.classList.add('only-numbers-alert--active');
-              }
-              
-            } else {
-              if (alertMessage.classList.contains('only-numbers-alert--active')) {
-                alertMessage.classList.remove('only-numbers-alert--active');
-              }
-            }
-          }
-      });
+    function isNumeric(str) {
+      return !isNaN(parseFloat(str)) && isFinite(str);
     }
 
   /**
     * Прицепляем фильтр вводимых данных на поля
     */
     Array.from(document.querySelectorAll('.form-row')).forEach((field) => {
-      fieldsFilter(field);
+      Array.from(field.querySelectorAll('input')).forEach((inputField) => {
+        let alertMessage = field.querySelector('.input-error');
+        inputField.onkeydown = function() {
+          inputField.lastValue = inputField.value;
+        }
+        inputField.oninput = function() {
+          if (!isNumeric(inputField.value) && inputField.value !== '') {
+            inputField.value = inputField.lastValue;
+
+            if (!alertMessage.classList.contains('input-error--active')) {
+              alertMessage.classList.add('input-error--active');
+            }
+          } else {
+            if (alertMessage.classList.contains('input-error--active')) {
+              alertMessage.classList.remove('input-error--active');
+            }
+          }
+        }
+      });
     });
 };

@@ -11,44 +11,49 @@
 <body>
 <form class="form" action="#">
 	<div class="for-input-wrapper"><input type="text" class="for-input" name="width" data-default="5" value="" placeholder="Введите данные"><p>Ширина помещения</p>
-		<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+		<p class="input-error">Для ввода доступны только числа и одна точка!</p>
 	</div>
 	<div class="for-input-wrapper"><input type="text" class="for-input" name="length" data-default="4" value="" placeholder="Введите данные"><p>Длина помещения</p>
-		<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+		<p class="input-error">Для ввода доступны только числа и одна точка!</p>
 	</div>
 	<div class="for-input-wrapper"><input type="text" class="for-input" name="quantity" data-default="22" value="" placeholder="Введите данные"><p>Количество светильников</p>
-		<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+		<p class="input-error">Для ввода доступны только числа и одна точка!</p>
 	</div>
 	<div class="for-input-wrapper">
 		<input type="text" class="for-input" name="angleLightSpot" data-default="45" value="" placeholder="Введите данные">
 		<p>Угол освещения °</p>
 		<input type="text" class="for-input" name="heightLightSpot" data-default="10" value="" placeholder="Введите данные">
 		<p>Высота до поверхности</p>
-		<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+		<p class="input-error">Для ввода доступны только числа и одна точка!</p>
 
 		<!-- <input type="text" class="for-input" name="diameterLightSpot" data-default="1.2" value="" placeholder="Введите данные">
 		<p>Диаметр освещения</p>
-		<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p> -->
+		<p class="input-error">Для ввода доступны только числа и одна точка!</p> -->
+	</div>
+	<div class="for-input-wrapper">
+		<input type="text" class="for-input" name="diameterLightSpot" data-default="0" value="" placeholder="Введите данные">
+		<p>Диаметр св. пятна</p>
+		<p class="input-error">Для ввода доступны только числа и одна точка!</p>
 	</div>
 </form>
 <section style="display: flex; flex-wrap: wrap; width: 1300px; margin: auto; justify-content: center">
 	<div class="rational-wrapper">
 		<div class="fixtures rational" data-text="">
-			<div class="fixtures-calculation__rational" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+			<div class="fixtures-calculation__rational" data-width="5" data-length="4" data-quantity="22"></div>
 		</div>
 	</div>
 	<div class="fixtures-mini-wrapper">
 		<div class="fixtures fixtures-mini" data-text="">
-			<div class="fixtures-calculation__min" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+			<div class="fixtures-calculation__min" data-width="5" data-length="4" data-quantity="22"></div>
 		</div>
 		<div class="fixtures fixtures-mini" data-text="">
-			<div class="fixtures-calculation__min-1" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+			<div class="fixtures-calculation__min-1" data-width="5" data-length="4" data-quantity="22"></div>
 		</div>
 		<div class="fixtures fixtures-mini" data-text="">
-			<div class="fixtures-calculation__min-2" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+			<div class="fixtures-calculation__min-2" data-width="5" data-length="4" data-quantity="22"></div>
 		</div>
 		<div class="fixtures fixtures-mini" data-text="">
-			<div class="fixtures-calculation__min-3" data-width="5" data-length="4" data-quantity="22" data-diameter-light-spot="1.2"></div>
+			<div class="fixtures-calculation__min-3" data-width="5" data-length="4" data-quantity="22"></div>
 		</div>
 	</div>
 </section>
@@ -74,12 +79,12 @@
 		padding: 0 5px;
 	}
 
-	.only-numbers-alert {
+	.input-error {
 		visibility: hidden;
 		color: red;
 	}
 
-	.only-numbers-alert.only-numbers-alert--active {
+	.input-error.input-error--active {
 		visibility: visible !important;
 	}
 

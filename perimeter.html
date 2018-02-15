@@ -17,29 +17,29 @@
 	<form action="#" style="margin: 30px auto 0; width: 1000px; display: flex; justify-content: space-around; align-items: center">
 		<div class="form-row">
 			<input type="text" class="for-input" name="width" data-default="" value="" placeholder="Ширина">
-			<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+			<p class="input-error">Для ввода доступны только числа и одна точка!</p>
 		</div>
 		<div class="form-row">
 			<input type="text" class="for-input" name="deltaWidth" data-default="" value="" placeholder="Отступ по ширине">
-			<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+			<p class="input-error">Для ввода доступны только числа и одна точка!</p>
 		</div>
 		<div class="form-row">
 			<input type="text" class="for-input" name="length" data-default="" value="" placeholder="Длина">
-			<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+			<p class="input-error">Для ввода доступны только числа и одна точка!</p>
 		</div>
 		<div class="form-row">
 			<input type="text" class="for-input" name="deltaLength" data-default="" value="" placeholder="Отступ по длине">
-			<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+			<p class="input-error">Для ввода доступны только числа и одна точка!</p>
 		</div>
 		<div class="form-row">
 			<input type="text" class="for-input" name="quantity" data-default="" value="" placeholder="Кол. светильников">
-			<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+			<p class="input-error">Для ввода доступны только числа и одна точка!</p>
 		</div>
 		<div class="form-row">
 			<input type="text" class="for-input" name="spotAngle" data-default="" value="" placeholder="Угол освещения">
 			<input type="text" class="for-input" name="spotHeight" data-default="" value="" placeholder="Высота светильника">
 			<!-- <input type="text" class="for-input" name="spot" data-default="" value="" placeholder="Диаметр освещения"> -->
-			<p class="only-numbers-alert">Для ввода доступны только числа и одна точка!</p>
+			<p class="input-error">Для ввода доступны только числа и одна точка!</p>
 		</div>
 	</form>
 	<div class="form-row" style=" margin-top: 20px; width: 100%; display: flex; justify-content: center;">
@@ -111,13 +111,13 @@
 		cursor: pointer;
 	}
 
-	.only-numbers-alert {
+	.input-error {
 		visibility: hidden;
 		text-align: center;
 		color: red;
 	}
 
-	.only-numbers-alert--active {
+	.input-error--active {
 		visibility: visible;
 	}
 
