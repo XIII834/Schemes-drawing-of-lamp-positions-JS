@@ -80,7 +80,7 @@ var FixturesCalculation = function () {
 
   }, {
     key: 'rational',
-    value: function rational() {
+    value: function rational(justBlurred) {
       var obj = {
         minMin: {
           name: 'minMin',
@@ -112,57 +112,57 @@ var FixturesCalculation = function () {
 
       this.finalQuantity = finalQuantity;
 
-      this[finalMethod[0]]();
+      this[finalMethod[0]](justBlurred);
 
       return this;
     }
   }, {
     key: 'minMin',
-    value: function minMin() {
+    value: function minMin(justBlurred) {
       var cols = void 0;
       var rows = void 0;
       cols = ~~this.paramsHtml.cols;
       rows = ~~Math.sqrt(this.paramsHtml.quantity * this.paramsHtml.length / this.paramsHtml.width);
       if (rows > cols) cols = [rows, rows = cols][0];
-      this.createSpotElems(this.paramsHtml.quantity, 'fixtures-calculation--item', cols, rows);
+      this.createSpotElems(this.paramsHtml.quantity, 'fixtures-calculation--item', cols, rows, justBlurred);
       return this;
     }
   }, {
     key: 'minMax',
-    value: function minMax() {
+    value: function minMax(justBlurred) {
       var cols = void 0;
       var rows = void 0;
       cols = ~~this.paramsHtml.cols;
       rows = Math.ceil(Math.sqrt(this.paramsHtml.quantity * this.paramsHtml.length / this.paramsHtml.width));
       if (rows > cols) cols = [rows, rows = cols][0];
-      this.createSpotElems(this.paramsHtml.quantity, 'fixtures-calculation--item', cols, rows);
+      this.createSpotElems(this.paramsHtml.quantity, 'fixtures-calculation--item', cols, rows, justBlurred);
       return this;
     }
   }, {
     key: 'maxMin',
-    value: function maxMin() {
+    value: function maxMin(justBlurred) {
       var cols = void 0;
       var rows = void 0;
       cols = Math.ceil(this.paramsHtml.cols);
       rows = ~~Math.sqrt(this.paramsHtml.quantity * this.paramsHtml.length / this.paramsHtml.width);
       if (rows > cols) cols = [rows, rows = cols][0];
-      this.createSpotElems(this.paramsHtml.quantity, 'fixtures-calculation--item', cols, rows);
+      this.createSpotElems(this.paramsHtml.quantity, 'fixtures-calculation--item', cols, rows, justBlurred);
       return this;
     }
   }, {
     key: 'maxMax',
-    value: function maxMax() {
+    value: function maxMax(justBlurred) {
       var cols = void 0;
       var rows = void 0;
       cols = Math.ceil(this.paramsHtml.cols);
       rows = Math.ceil(Math.sqrt(this.paramsHtml.quantity * this.paramsHtml.length / this.paramsHtml.width));
       if (rows > cols) cols = [rows, rows = cols][0];
-      this.createSpotElems(this.paramsHtml.quantity, 'fixtures-calculation--item', cols, rows);
+      this.createSpotElems(this.paramsHtml.quantity, 'fixtures-calculation--item', cols, rows, justBlurred);
       return this;
     }
   }, {
     key: 'createSpotElems',
-    value: function createSpotElems(quantity, className, cols, rows) {
+    value: function createSpotElems(quantity, className, cols, rows, justBlurred) {
       var spotElem = void 0;
       var spotWidth = void 0;
       var spotHeight = void 0;
@@ -217,7 +217,7 @@ var FixturesCalculation = function () {
         var disk = document.createElement('span');
         disk.className = 'for-lightning';
 
-        if (this.paramsHtml.diameterLightSpot === 0 || isNaN(this.paramsHtml.diameterLightSpot)) {
+        if ((justBlurred === 'angleLightSpot') || (justBlurred === 'heightLightSpot')) {
           var angleInRad = this.paramsHtml.angleLightSpot * Math.PI / 180,
               h = this.paramsHtml.heightLightSpot,
 
@@ -225,10 +225,20 @@ var FixturesCalculation = function () {
               diameter = 2 * h / Math.cos(angleInRad / 2) * Math.sin(angleInRad / 2);
 
               if (!isNaN(diameter)) document.querySelector('[name="diameterLightSpot"]').value = diameter.toFixed(2);
-        } else {
-          diameter = this.paramsHtml.diameterLightSpot;
-        }
 
+        } else if (justBlurred === 'diameterLightSpot') {
+
+          diameter = this.paramsHtml.diameterLightSpot;
+
+          document.querySelector('[name="angleLightSpot"]').value = '';
+          document.querySelector('[name="heightLightSpot"]').value = '';
+
+        } else {
+
+          diameter = this.paramsHtml.diameterLightSpot;
+
+        } 
+        
         /*disk.style.minWidth = this.proportion * this.paramsHtml.diameterLightSpot + 'px';
         disk.style.minHeight = this.proportion * this.paramsHtml.diameterLightSpot + 'px';*/
 
@@ -277,15 +287,17 @@ document.addEventListener('DOMContentLoaded', function () {
       item.onblur = function () {
         var name = item.name;
         var dataValue = item.value || item.dataset.default;
+        var justBlurred = item.name;
+
         Array.from(document.querySelectorAll('[class^="fixtures-calculation__"]')).forEach(function (item) {
           item.dataset[name] = dataValue;
         });
         /*item.placeholder = dataValue;*/
-        new FixturesCalculation('.fixtures-calculation__min').init().minMin();
-        new FixturesCalculation('.fixtures-calculation__min-1').init().maxMin();
-        new FixturesCalculation('.fixtures-calculation__min-2').init().minMax();
-        new FixturesCalculation('.fixtures-calculation__min-3').init().maxMax();
-        rational = new FixturesCalculation('.fixtures-calculation__rational').init().rational();
+        new FixturesCalculation('.fixtures-calculation__min').init().minMin(justBlurred);
+        new FixturesCalculation('.fixtures-calculation__min-1').init().maxMin(justBlurred);
+        new FixturesCalculation('.fixtures-calculation__min-2').init().minMax(justBlurred);
+        new FixturesCalculation('.fixtures-calculation__min-3').init().maxMax(justBlurred);
+        rational = new FixturesCalculation('.fixtures-calculation__rational').init().rational(justBlurred);
 
         whoIsActive();
         whoIsOptimal();
@@ -410,5 +422,9 @@ document.addEventListener('DOMContentLoaded', function () {
           }
         });
       });
+
+      document.querySelector('[name="angleLightSpot"]').oninput = function() {
+        document.querySelector('[name="diameterLightSpot"]').value = '0';
+      }
   };
 });

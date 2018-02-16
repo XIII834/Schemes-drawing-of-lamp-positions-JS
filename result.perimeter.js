@@ -105,7 +105,7 @@ var InitialForCircuit = function () {
     }
   }, {
     key: 'createPerimeter',
-    value: function createPerimeter(type) {
+    value: function createPerimeter(type, justBlurred) {
       this.roomAdaptation();
       type = this.parent.element.dataset.type;
       this.parent.type = type;
@@ -671,7 +671,7 @@ var Perimeter = function (_InitialForCircuit) {
     }
   }, {
     key: 'initPerimeter',
-    value: function initPerimeter(params) {
+    value: function initPerimeter(params, justBlurred) {
       _get(Perimeter.prototype.__proto__ || Object.getPrototypeOf(Perimeter.prototype), 'createPerimeter', this).call(this);
       this[this.parent.type](params.optimization);
     }
@@ -706,6 +706,7 @@ window.onload = function () {
     item.onblur = function () {
       var name = item.name;
       var dataValue = item.value || item.dataset.default;
+      var justBlurred = item.name;
 
       /**
         * Выполним проверку на соответствие заполненных полей всем критериям
@@ -734,9 +735,10 @@ window.onload = function () {
       $forEach('.scheme', function (item) {
         item.dataset[name] = dataValue;
       });
-      item.placeholder = dataValue;
+      /*item.placeholder = dataValue;*/
 
       var empty = $filter('.for-input:not([type="checkbox"])', function (item) {
+
         if (item.value === '') {
           item.classList.add('border-red');
         } else {
@@ -746,15 +748,16 @@ window.onload = function () {
       }).length;
       if (empty) return false;
 
-      new Perimeter('.scheme-parent_perimeter_disk').initPerimeter('disk', document.querySelector('#opt-quantity').checked);
-      new Perimeter('.scheme-parent_perimeter_rectangle').initPerimeter('rectangle', document.querySelector('#opt-quantity').checked);
-      new Perimeter('.scheme-parent_perimeter_ellipse').initPerimeter('ellipse');
-      new Perimeter('.scheme-parent_perimeter_area').initPerimeter('area');
-      new Perimeter('.scheme-parent_perimeter_scale').initPerimeter(document.querySelector('.scheme-parent_perimeter_scale').dataset.type);
+      new Perimeter('.scheme-parent_perimeter_disk').initPerimeter('disk', justBlurred, document.querySelector('#opt-quantity').checked);
+      new Perimeter('.scheme-parent_perimeter_rectangle').initPerimeter('rectangle', justBlurred, document.querySelector('#opt-quantity').checked);
+      new Perimeter('.scheme-parent_perimeter_ellipse').initPerimeter('ellipse', justBlurred);
+      new Perimeter('.scheme-parent_perimeter_area').initPerimeter('area', justBlurred);
+      new Perimeter('.scheme-parent_perimeter_scale').initPerimeter(document.querySelector('.scheme-parent_perimeter_scale').dataset.type, justBlurred);
     };
   });
   $forEach('.scheme-js', function (item) {
     item.onclick = function () {
+
 
       var fail = document.querySelector('.fail');
 
@@ -809,7 +812,7 @@ window.onload = function () {
       widthIndentField = document.querySelector('[name="deltaWidth"]'),
       lengthIndentField = document.querySelector('[name="deltaLength"]'),
       quantityField = document.querySelector('[name="quantity"]'),
-      /*spotField = document.querySelector('[name = "spot"]');*/
+      spotField = document.querySelector('[name = "spot"]'),
       spotAngle = document.querySelector('[name="spotAngle"]'),
       spotHeight = document.querySelector('[name="spotHeight"]');
 
@@ -818,7 +821,7 @@ window.onload = function () {
       widthIndentField.value = '';
       lengthIndentField.value = '';
       quantityField.value = '';
-      /*spotField.value = '';*/
+      spotField.value = '';
       spotAngle.value = '';
       spotHeight.value = '';
 
